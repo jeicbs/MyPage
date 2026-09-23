@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="it" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Professionale | Developer & Creator</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom Glassmorphism Styling */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        /* Glowing Effects */
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.3);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .light ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 light:bg-slate-50 light:text-slate-800 transition-colors duration-300 min-h-screen selection:bg-brand-500 selection:text-white">
+
+    <div id="configModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-2xl w-full rounded-2xl p-6 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700 light:border-slate-200">
+                <h3 class="text-xl font-bold text-brand-400 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> Personalizza i Tuoi Dati
+                </h3>
+                <button onclick="toggleModal('configModal')" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <p class="text-sm text-slate-400 mt-2 mb-4">
+                Incolla o modifica le tue informazioni in formato JSON per aggiornare istantaneamente l'interfaccia.
+            </p>
+            <textarea id="jsonInput" class="w-full h-80 bg-slate-900 light:bg-slate-100 text-slate-200 light:text-slate-800 font-mono text-xs p-4 rounded-xl border border-slate-700 light:border-slate-300 focus:outline-none focus:border-brand-500" spellcheck="false"></textarea>
+            <div class="flex justify-end gap-3 mt-4">
+                <button onclick="resetData()" class="px-4 py-2 rounded-xl text-sm border border-slate-700 hover:bg-slate-800 transition">Ripristina Standard</button>
+                <button onclick="applyDataFromJSON()" class="px-5 py-2 rounded-xl text-sm font-semibold bg-brand-500 hover:bg-brand-600 text-white shadow-lg shadow-brand-500/20 transition">Salva e Applica</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-5xl rounded-2xl glass px-4 py-3 flex items-center justify-between shadow-2xl transition-all duration-300">
+        <!-- Logo / Name -->
+        <a href="#hero" class="text-lg font-bold tracking-tight text-white light:text-slate-900 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center text-white text-sm font-black shadow-md">
+                &lt;/&gt;
+            </span>
+            <span id="navName">Marco Rossi</span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300 light:text-slate-600">
+            <a href="#about" class="hover:text-brand-400 transition">Chi Sono</a>
+            <a href="#skills" class="hover:text-brand-400 transition">Competenze</a>
+            <a href="#projects" class="hover:text-brand-400 transition">Progetti</a>
+            <a href="#experience" class="hover:text-brand-400 transition">Esperienza</a>
+            <a href="#contact" class="hover:text-brand-400 transition">Contatti</a>
+        </div>
+
+        <!-- Action Buttons & Theme Toggle -->
+        <div class="flex items-center gap-2">
+            <button onclick="toggleModal('configModal')" class="p-2 rounded-xl hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 transition" title="Personalizza Dati">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+            <button id="themeToggle" onclick="toggleTheme()" class="p-2 rounded-xl hover:bg-slate-800 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 transition" title="Cambia Tema">
+                <i class="fa-solid fa-moon text-lg" id="themeIcon"></i>
+            </button>
+            <a href="#contact" class="hidden sm:inline-flex px-4 py-2 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-white light:bg-slate-200 light:text-slate-800 light:hover:bg-slate-300 transition">
+                Parliamo
+            </a>
+        </div>
+    </nav>
+
+    <section id="hero" class="min-h-screen flex items-center justify-center pt-28 pb-16 px-4 relative overflow-hidden">
+        <!-- Background Decorative Glows -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-[90px] pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+            <!-- Profile Avatar / Badge -->
+            <div class="relative group mb-6">
+                <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-cyan-400 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                <img id="profileImg" src="https://placehold.co/160x160/0ea5e9/ffffff?text=MR" alt="Avatar Profilo" class="relative w-36 h-36 rounded-full object-cover border-2 border-slate-900 shadow-2xl">
+            </div>
+
+            <!-- Status Pill -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass mb-6 text-xs font-medium text-emerald-400 border-emerald-500/30">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Disponibile per nuove opportunità</span>
+            </div>
+
+            <!-- Main Title & Typing Text -->
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 text-slate-100 light:text-slate-900">
+                Ciao, sono <span id="heroName" class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-400">Marco Rossi</span>
+            </h1>
+            
+            <div class="text-xl sm:text-2xl text-slate-400 light:text-slate-600 font-medium h-10 flex items-center justify-center mb-6">
+                <span id="typingRole"></span><span class="animate-pulse text-brand-400 font-bold">|</span>
+            </div>
+
+            <!-- Short Tagline -->
+            <p id="heroBio" class="text-base sm:text-lg text-slate-400 light:text-slate-600 max-w-2xl mb-8 leading-relaxed">
+                Sviluppatore Software appassionato di architetture web moderne, soluzioni Open Source e interfacce utente curate nel minimo dettaglio.
+            </p>
+
+            <!-- Social Links & Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mb-10">
+                <a href="#projects" class="px-6 py-3 rounded-xl font-semibold bg-brand-500 hover:bg-brand-600 text-white shadow-lg shadow-brand-500/25 transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-code mr-2"></i> Esplora Progetti
+                </a>
+                <button onclick="downloadCVSimulation()" class="px-6 py-3 rounded-xl font-semibold glass hover:bg-white/10 text-slate-200 light:text-slate-800 transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-file-arrow-down mr-2"></i> Scarica CV
+                </button>
+            </div>
+
+            <!-- Social Media Icons -->
+            <div id="socialLinks" class="flex items-center gap-5 text-xl text-slate-400 light:text-slate-600">
+                <!-- Injected dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-xs uppercase tracking-widest text-brand-400 font-bold mb-2">Chi Sono</h2>
+            <p class="text-3xl font-bold text-slate-100 light:text-slate-900">Passione, Codice e Risoluzione di Problemi</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <!-- Long Description Card -->
+            <div class="lg:col-span-7 glass-card p-8 rounded-2xl shadow-xl">
+                <h3 class="text-xl font-bold mb-4 text-slate-200 light:text-slate-800">Un po' della mia storia</h3>
+                <p id="aboutFullText" class="text-slate-300 light:text-slate-600 leading-relaxed space-y-4 mb-6">
+                    Con oltre 5 anni di esperienza nello sviluppo web full stack, mi dedico alla realizzazione di applicazioni scalabili, veloci e accessibili. Amo affrontare sfide complesse e trasformarle in esperienze utente semplici ed intuitive.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20">Clean Code</span>
+                    <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">UI/UX Design</span>
+                    <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">Open Source</span>
+                    <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Performance First</span>
+                </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div id="statsGrid" class="lg:col-span-5 grid grid-cols-2 gap-4">
+                <!-- Dynamically populated stats -->
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-xs uppercase tracking-widest text-brand-400 font-bold mb-2">Competenze Tecniche</h2>
+            <p class="text-3xl font-bold text-slate-100 light:text-slate-900">Tecnologie e Strumenti che utilizzo</p>
+        </div>
+
+        <div id="skillsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Skill categories injected here -->
+        </div>
+    </section>
+
+    <section id="projects" class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-xs uppercase tracking-widest text-brand-400 font-bold mb-2">Portfolio</h2>
+            <p class="text-3xl font-bold text-slate-100 light:text-slate-900 mb-6">Progetti In Evidenza</p>
+
+            <!-- Filter Categories -->
+            <div id="projectFilters" class="flex flex-wrap justify-center gap-2 mb-8">
+                <!-- Dynamically generated filters -->
+            </div>
+        </div>
+
+        <!-- Project Grid -->
+        <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamically injected projects -->
+        </div>
+    </section>
+
+    <section class="py-16 px-4 max-w-6xl mx-auto">
+        <div class="glass-card p-8 rounded-2xl shadow-xl relative overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-100 light:text-slate-900 mb-2 flex items-center gap-3">
+                        <i class="fa-brands fa-github text-3xl"></i> Attività su GitHub
+                    </h3>
+                    <p class="text-slate-400 light:text-slate-600 text-sm">Contributi, repository e statistiche in tempo reale.</p>
+                </div>
+                <a id="githubProfileBtn" href="https://github.com" target="_blank" class="px-5 py-2.5 rounded-xl font-medium bg-slate-800 hover:bg-slate-700 text-white text-sm transition border border-slate-700">
+                    Vedi Profilo GitHub <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
+                </a>
+            </div>
+
+            <!-- Simulated GitHub Commit Activity Heatmap -->
+            <div class="mt-8 pt-6 border-t border-slate-800 light:border-slate-200">
+                <p class="text-xs font-semibold text-slate-400 mb-3">MATRICE CONTRIBUTI (ULTIMI MESI)</p>
+                <div id="githubHeatmap" class="grid grid-rows-7 grid-flow-col gap-1.5 overflow-x-auto pb-2">
+                    <!-- Matrix cells injected by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="py-20 px-4 max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-xs uppercase tracking-widest text-brand-400 font-bold mb-2">Percorso</h2>
+            <p class="text-3xl font-bold text-slate-100 light:text-slate-900">Esperienza Lavorativa ed Istruzione</p>
+        </div>
+
+        <div id="timelineContainer" class="relative border-l-2 border-slate-800 light:border-slate-300 ml-4 md:ml-32 space-y-8">
+            <!-- Timeline items injected dynamically -->
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 px-4 max-w-4xl mx-auto">
+        <div class="glass-card p-8 sm:p-12 rounded-3xl shadow-2xl relative">
+            <div class="text-center mb-10">
+                <h2 class="text-xs uppercase tracking-widest text-brand-400 font-bold mb-2">Mettiamoci in Contatto</h2>
+                <p class="text-3xl font-bold text-slate-100 light:text-slate-900 mb-3">Hai un progetto o un'opportunità?</p>
+                <p class="text-slate-400 light:text-slate-600 text-sm max-w-lg mx-auto">
+                    Compila il modulo qui sotto o inviami direttamente un'email per discutere di collaborazioni o consulenze.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+                <div class="text-center p-4 glass rounded-2xl">
+                    <i class="fa-solid fa-envelope text-brand-400 text-2xl mb-2"></i>
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase">Email</h4>
+                    <p id="contactEmailDisplay" class="text-sm font-medium text-slate-200 light:text-slate-800 mt-1">m.rossi@example.com</p>
+                    <button onclick="copyEmail()" class="text-xs text-brand-400 hover:underline mt-2 font-semibold">Copia Email</button>
+                </div>
+                <div class="text-center p-4 glass rounded-2xl">
+                    <i class="fa-solid fa-location-dot text-cyan-400 text-2xl mb-2"></i>
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase">Posizione</h4>
+                    <p id="contactLocation" class="text-sm font-medium text-slate-200 light:text-slate-800 mt-1">Milano / Remoto</p>
+                </div>
+                <div class="text-center p-4 glass rounded-2xl">
+                    <i class="fa-solid fa-comments text-purple-400 text-2xl mb-2"></i>
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase">Social</h4>
+                    <p class="text-sm font-medium text-slate-200 light:text-slate-800 mt-1">Sempre Attivo</p>
+                </div>
+            </div>
+
+            <!-- Interactive Form -->
+            <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Nome e Cognome</label>
+                        <input type="text" required placeholder="Mario Rossi" class="w-full px-4 py-3 rounded-xl bg-slate-900/50 light:bg-slate-100 border border-slate-700/60 light:border-slate-300 text-slate-200 light:text-slate-800 focus:outline-none focus:border-brand-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Email</label>
+                        <input type="email" required placeholder="mario@example.com" class="w-full px-4 py-3 rounded-xl bg-slate-900/50 light:bg-slate-100 border border-slate-700/60 light:border-slate-300 text-slate-200 light:text-slate-800 focus:outline-none focus:border-brand-500 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Oggetto</label>
+                    <input type="text" required placeholder="Proposta di Collaborazione" class="w-full px-4 py-3 rounded-xl bg-slate-900/50 light:bg-slate-100 border border-slate-700/60 light:border-slate-300 text-slate-200 light:text-slate-800 focus:outline-none focus:border-brand-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Messaggio</label>
+                    <textarea rows="4" required placeholder="Scrivi il tuo messaggio qui..." class="w-full px-4 py-3 rounded-xl bg-slate-900/50 light:bg-slate-100 border border-slate-700/60 light:border-slate-300 text-slate-200 light:text-slate-800 focus:outline-none focus:border-brand-500 transition"></textarea>
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-brand-500 to-cyan-500 text-white shadow-lg shadow-brand-500/25 hover:opacity-95 transition">
+                    Invia Messaggio <i class="fa-solid fa-paper-plane ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="py-8 text-center text-xs text-slate-500 border-t border-slate-800/50 light:border-slate-200">
+        <p>© <span id="year"></span> <span id="footerName">Marco Rossi</span>. Progettato e sviluppato per GitHub Pages.</p>
+    </footer>
+
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none glass-card px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-brand-500/30">
+        <i class="fa-solid fa-circle-check text-brand-400 text-lg" id="toastIcon"></i>
+        <span id="toastMessage" class="text-sm font-medium text-slate-200">Notifica</span>
+    </div>
+
+    <script>
+        /* Portfolio Data Structure (Editable via Config Modal) */
+        let portfolioData = {
+            profile: {
+                name: "Marco Rossi",
+                roles: ["Full Stack Developer", "Open Source Enthusiast", "UI/UX Designer", "Problem Solver"],
+                bio: "Sviluppatore Software appassionato di architetture web moderne, soluzioni Open Source e interfacce utente curate nel minimo dettaglio.",
+                fullBio: "Con oltre 5 anni di esperienza nello sviluppo web full stack, mi dedico alla realizzazione di applicazioni scalabili, veloci e accessibili. Amo affrontare sfide complesse e trasformarle in esperienze utente semplici ed intuitive. Collaboro attivamente con community Open Source ed esploro costantemente le ultime tecnologie.",
+                location: "Milano, Italia / Remoto",
+                email: "marco.rossi.dev@example.com",
+                avatar: "https://placehold.co/160x160/0ea5e9/ffffff?text=MR",
+                socials: [
+                    { name: "GitHub", url: "https://github.com", icon: "fa-brands fa-github" },
+                    { name: "LinkedIn", url: "https://linkedin.com", icon: "fa-brands fa-linkedin" },
+                    { name: "Twitter/X", url: "https://x.com", icon: "fa-brands fa-x-twitter" },
+                    { name: "Email", url: "mailto:marco.rossi.dev@example.com", icon: "fa-solid fa-envelope" }
+                ]
+            },
+            stats: [
+                { value: "5+", label: "Anni di Esperienza", icon: "fa-solid fa-briefcase" },
+                { value: "30+", label: "Progetti Completati", icon: "fa-solid fa-rocket" },
+                { value: "1.2k+", label: "Commit GitHub", icon: "fa-solid fa-code-commit" },
+                { value: "100%", label: "Soddisfazione Clienti", icon: "fa-solid fa-star" }
+            ],
+            skills: [
+                {
+                    category: "Frontend & UI",
+                    items: [
+                        { name: "JavaScript / TypeScript", level: 92 },
+                        { name: "React.js / Next.js", level: 88 },
+                        { name: "Tailwind CSS / HTML5", level: 95 },
+                        { name: "Vue.js", level: 75 }
+                    ]
+                },
+                {
+                    category: "Backend & Cloud",
+                    items: [
+                        { name: "Node.js / Express", level: 85 },
+                        { name: "Python / FastApi", level: 80 },
+                        { name: "PostgreSQL / MongoDB", level: 82 },
+                        { name: "Docker & Cloud Deploy", level: 78 }
+                    ]
+                }
+            ],
+            projects: [
+                {
+                    title: "DevMetrics Dashboard",
+                    category: "Web App",
+                    description: "Piattaforma web per monitorare le metriche di produttività dei team di sviluppo in tempo reale.",
+                    tags: ["React", "TypeScript", "Tailwind", "Node.js"],
+                    github: "https://github.com",
+                    demo: "https://example.com"
+                },
+                {
+                    title: "TaskFlow CLI Tool",
+                    category: "Tools",
+                    description: "Utility da riga di comando ultraveloce per l'automazione dei workflow di sviluppo quotidiani.",
+                    tags: ["Python", "CLI", "Open Source"],
+                    github: "https://github.com",
+                    demo: "https://example.com"
+                },
+                {
+                    title: "SaaS Landing Kit",
+                    category: "UI Design",
+                    description: "Template ad alte prestazioni per startup SaaS realizzato con Tailwind CSS e componenti modulari.",
+                    tags: ["HTML5", "Tailwind CSS", "JavaScript"],
+                    github: "https://github.com",
+                    demo: "https://example.com"
+                }
+            ],
+            experiences: [
+                {
+                    period: "2022 - Presente",
+                    role: "Senior Full Stack Developer",
+                    company: "Tech Solutions S.r.l.",
+                    description: "Guida dello sviluppo frontend e backend per architetture cloud ad alto traffico. Coordinamento di un team di 4 sviluppatori."
+                },
+                {
+                    period: "2020 - 2022",
+                    role: "Frontend Developer",
+                    company: "Digital Agency Web",
+                    description: "Sviluppo di interfacce utente responsive, ottimizzazione della velocità delle pagine web e integrazione API REST."
+                },
+                {
+                    period: "2017 - 2020",
+                    role: "Laurea in Informatica",
+                    company: "Università degli Studi",
+                    description: "Specializzazione in algoritmi, strutture dati, ingegneria del software e sviluppo di applicazioni web."
+                }
+            ]
+        };
+
+        let currentFilter = "All";
+
+        window.onload = function() {
+            document.getElementById('year').innerText = new Date().getFullYear();
+            renderAll();
+            startTypingEffect();
+            generateGithubHeatmap();
+        }
+
+        function renderAll() {
+            // Profile Render
+            document.getElementById('navName').innerText = portfolioData.profile.name;
+            document.getElementById('heroName').innerText = portfolioData.profile.name;
+            document.getElementById('footerName').innerText = portfolioData.profile.name;
+            document.getElementById('heroBio').innerText = portfolioData.profile.bio;
+            document.getElementById('aboutFullText').innerText = portfolioData.profile.fullBio;
+            document.getElementById('contactEmailDisplay').innerText = portfolioData.profile.email;
+            document.getElementById('contactLocation').innerText = portfolioData.profile.location;
+            document.getElementById('profileImg').src = portfolioData.profile.avatar;
+
+            // Render Socials
+            const socialContainer = document.getElementById('socialLinks');
+            socialContainer.innerHTML = portfolioData.profile.socials.map(s => `
+                <a href="${s.url}" target="_blank" class="hover:text-brand-400 transition" title="${s.name}">
+                    <i class="${s.icon}"></i>
+                </a>
+            `).join('');
+
+            // Render Stats
+            const statsContainer = document.getElementById('statsGrid');
+            statsContainer.innerHTML = portfolioData.stats.map(st => `
+                <div class="glass-card p-5 rounded-2xl text-center">
+                    <i class="${st.icon} text-brand-400 text-xl mb-2"></i>
+                    <h4 class="text-2xl sm:text-3xl font-extrabold text-slate-100 light:text-slate-900">${st.value}</h4>
+                    <p class="text-xs text-slate-400 light:text-slate-600 mt-1">${st.label}</p>
+                </div>
+            `).join('');
+
+            // Render Skills
+            const skillsContainer = document.getElementById('skillsContainer');
+            skillsContainer.innerHTML = portfolioData.skills.map(cat => `
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="text-lg font-bold text-slate-200 light:text-slate-800 mb-4 pb-2 border-b border-slate-700/50 light:border-slate-200">
+                        ${cat.category}
+                    </h3>
+                    <div class="space-y-4">
+                        ${cat.items.map(item => `
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1 text-slate-300 light:text-slate-700">
+                                    <span>${item.name}</span>
+                                    <span class="text-brand-400">${item.level}%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 light:bg-slate-200 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-brand-500 to-cyan-400 h-full rounded-full transition-all duration-1000" style="width: ${item.level}%"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Project Filters
+            const categories = ["All", ...new Set(portfolioData.projects.map(p => p.category))];
+            const filterContainer = document.getElementById('projectFilters');
+            filterContainer.innerHTML = categories.map(cat => `
+                <button onclick="setFilter('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-medium transition ${currentFilter === cat ? 'bg-brand-500 text-white shadow-md' : 'glass hover:bg-white/10 text-slate-300 light:text-slate-700'}">
+                    ${cat}
+                </button>
+            `).join('');
+
+            renderProjects();
+            renderTimeline();
+        }
+
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            const filtered = currentFilter === "All" 
+                ? portfolioData.projects 
+                : portfolioData.projects.filter(p => p.category === currentFilter);
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="glass-card rounded-2xl overflow-hidden hover:border-brand-500/50 transition-all duration-300 flex flex-col justify-between group">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                                ${p.category}
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100 light:text-slate-900 group-hover:text-brand-400 transition mb-2">${p.title}</h3>
+                        <p class="text-xs text-slate-400 light:text-slate-600 mb-4 leading-relaxed">${p.description}</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            ${p.tags.map(t => `<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 light:bg-slate-200 text-slate-300 light:text-slate-700">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-900/40 light:bg-slate-100/60 border-t border-slate-800/50 light:border-slate-200 flex justify-between items-center text-xs">
+                        <a href="${p.github}" target="_blank" class="hover:text-brand-400 font-medium flex items-center gap-1">
+                            <i class="fa-brands fa-github text-sm"></i> Codice
+                        </a>
+                        <a href="${p.demo}" target="_blank" class="text-brand-400 hover:underline font-semibold flex items-center gap-1">
+                            Demo Live <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setFilter(cat) {
+            currentFilter = cat;
+            renderAll();
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = portfolioData.experiences.map(item => `
+                <div class="relative pl-6 md:pl-8 group">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-500 border-4 border-slate-950 light:border-slate-50 group-hover:scale-125 transition"></div>
+                    <div class="glass-card p-6 rounded-2xl">
+                        <span class="text-xs font-bold text-brand-400 uppercase tracking-wide">${item.period}</span>
+                        <h3 class="text-lg font-bold text-slate-100 light:text-slate-900 mt-1">${item.role}</h3>
+                        <p class="text-xs font-semibold text-slate-400 light:text-slate-600 mb-3">${item.company}</p>
+                        <p class="text-sm text-slate-300 light:text-slate-600 leading-relaxed">${item.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function startTypingEffect() {
+            const roles = portfolioData.profile.roles;
+            const target = document.getElementById('typingRole');
+            const currentRole = roles[roleIndex];
+
+            if (isDeleting) {
+                target.innerText = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                target.innerText = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(startTypingEffect, typeSpeed);
+        }
+
+        function generateGithubHeatmap() {
+            const heatmap = document.getElementById('githubHeatmap');
+            const levels = ['bg-slate-800', 'bg-emerald-950', 'bg-emerald-700', 'bg-emerald-500', 'bg-emerald-400'];
+            let html = '';
+            for (let i = 0; i < 210; i++) {
+                const rand = Math.floor(Math.random() * 5);
+                html += `<div class="w-2.5 h-2.5 rounded-sm ${levels[rand]}" title="Contributi"></div>`;
+            }
+            heatmap.innerHTML = html;
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                icon.className = 'fa-solid fa-sun text-amber-500';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-moon text-slate-300';
+            }
+        }
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains('hidden')) {
+                document.getElementById('jsonInput').value = JSON.stringify(portfolioData, null, 2);
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function applyDataFromJSON() {
+            try {
+                const parsed = JSON.parse(document.getElementById('jsonInput').value);
+                portfolioData = parsed;
+                renderAll();
+                toggleModal('configModal');
+                showToast("Dati aggiornati con successo!");
+            } catch (err) {
+                alert("Errore nel formato JSON: Controlla la sintassi!");
+            }
+        }
+
+        function resetData() {
+            location.reload();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function copyEmail() {
+            const email = portfolioData.profile.email;
+            const tempInput = document.createElement('input');
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Email copiata negli appunti!");
+        }
+
+        function downloadCVSimulation() {
+            showToast("Download del CV avviato...");
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            showToast("Messaggio inviato con successo!");
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
